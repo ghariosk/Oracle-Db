@@ -25,9 +25,29 @@ sudo su root -c '/etc/init.d/oracle-xe configure responseFile=/home/vagrant/Disk
 sudo iptables -F
 
 sudo iptables -A INPUT -m state --state NEW -p tcp --dport 8080 -j ACCEPT
+sudo iptables -A INPUT -m state --state NEW -p tcp --dport 1521 -j ACCEPT
 
 rm -rf /home/vagrant/Disk1
 
+echo "export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe" >> /etc/profile
+echo "export ORACLE_SID=XE" >> /etc/profile
+echo "export PATH=$PATH:/u01/app/oracle/product/11.2.0/xe/bin" >> /etc/profile
+
+export ORACLE_HOME=/u01/app/oracle/product/11.2.0/xe
+
+export ORACLE_SID=XE 
+
+export PATH=$PATH:/u01/app/oracle/product/11.2.0/xe/bin
+
+
+
+sudo su - oracle -c "/u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s  / as sysdba <<EOF
+shutdown immediate;
+startup nomount;
+alter database mount;
+alter database open;
+quit
+EOF"
 
 
 
